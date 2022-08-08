@@ -1,4 +1,5 @@
 from enum import Enum, auto
+
 import Node
 
 
@@ -13,9 +14,16 @@ class Tree:
     def __init__(self, root_node, name=''):
         self.root = root_node
         self.name = name
+        self.tree_list = [] # flat list representation of tree traversal
+
+    def get_tree_list(self):
+        return self.tree_list
 
     def get_name(self):
         return self.name
+
+    def get_root_node(self):
+        return self.root
 
     def search_node(self, item):
         """
@@ -41,7 +49,7 @@ class Tree:
                 else:
                     # add new node to the left of next_node
                     next_node.set_left(new_node)
-                    #print(f'Added {new_node.get_item()} left of {next_node.get_item()}')
+                    # print(f'Added {new_node.get_item()} left of {next_node.get_item()}')
                     return new_node
             # insert right of parent
             elif new_node.get_item() > next_node.get_item():
@@ -50,32 +58,24 @@ class Tree:
                 else:
                     # add new node to the right of next_node
                     next_node.set_right(new_node)
-                    #print(f'Added {new_node.get_item()} right of {next_node.get_item()}')
+                    # print(f'Added {new_node.get_item()} right of {next_node.get_item()}')
                     return new_node
             else:
                 # cannot insert node with existing value
                 return None
 
-    def traverse(self, start_node: Node = None) -> list:
-        print(f'\nTree Traversal: {self.name}')
-        next_node = start_node if start_node else self.root
-        tree_list = [next_node.get_item()]
-        while next_node:
-            if next_node.get_left():
-                next_node = next_node.get_left()
-                tree_list.append(next_node.get_item())
-            else:
-                break
+    def traverse(self):
+        print(f'Traverse {self.get_name()}')
+        self.tree_list.clear()
+        self.traverse_node(self.get_root_node())
 
-        next_node = start_node if start_node else self.root
-        while next_node:
-            if next_node.get_right():
-                next_node = next_node.get_right()
-                tree_list.append(next_node.get_item())
-            else:
-                break
+    def traverse_node(self, start_node):
+        self.tree_list.append(start_node.get_item())
+        if start_node.get_left():
+            self.traverse_node(start_node.get_left())
 
-        return tree_list
+        if start_node.get_right():
+            self.traverse_node(start_node.get_right())
 
     def __str__(self):
-        return str(self.root.get_item)
+        return str(self.root.get_item())

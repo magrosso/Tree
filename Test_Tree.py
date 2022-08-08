@@ -84,4 +84,5 @@ def test_traverse():
         n = Node.Node(val)
         assert t.add_node(n) == n
 
-    assert t.traverse() == [start] + list(smaller_list) + list(larger_list)
+    t.traverse()
+    assert t.get_tree_list() == [start] + list(smaller_list) + list(larger_list)
