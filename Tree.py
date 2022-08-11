@@ -4,9 +4,9 @@ import Node
 
 
 class TraverseOrder(Enum):
-    PREORDER = auto()
-    INORDER = auto()
-    POSTORDER = auto()
+    PRE_ORDER = auto()
+    IN_ORDER = auto()
+    POST_ORDER = auto()
 
 
 # Binary search tree (BST)
@@ -14,7 +14,11 @@ class Tree:
     def __init__(self, root_node, name=''):
         self.root = root_node
         self.name = name
-        self.tree_list = [] # flat list representation of tree traversal
+        self.height = 0
+        self.tree_list = []  # flat list representation of tree traversal
+
+    def __str__(self):
+        return str(self.root.get_item())
 
     def get_tree_list(self):
         return self.tree_list
@@ -24,6 +28,19 @@ class Tree:
 
     def get_root_node(self):
         return self.root
+
+    def get_height(self) -> int:
+        self.height = 0
+        return self.get_node_height(self.root, 0)
+
+    def get_node_height(self, node, height) -> int:
+        left_height = height
+        right_height = height
+        if node.get_left():
+            left_height = self.get_node_height(node.get_left(), left_height + 1)
+        if node.get_right():
+            right_height = self.get_node_height(node.get_right(), right_height + 1)
+        return max(left_height, right_height)
 
     def search_node(self, item):
         """
@@ -64,18 +81,23 @@ class Tree:
                 # cannot insert node with existing value
                 return None
 
-    def traverse(self):
-        print(f'Traverse {self.get_name()}')
+    def traverse(self, order: TraverseOrder):
+        print(f'\nTraverse tree: {self.get_name()}')
         self.tree_list.clear()
-        self.traverse_node(self.get_root_node())
+        self.traverse_node(self.get_root_node(), order)
+        print(f'Traversal order: {self.tree_list}')
 
-    def traverse_node(self, start_node):
-        self.tree_list.append(start_node.get_item())
+    def traverse_node(self, start_node, order: TraverseOrder):
+        if order == TraverseOrder.PRE_ORDER:
+            self.tree_list.append(start_node.get_item())
         if start_node.get_left():
-            self.traverse_node(start_node.get_left())
+            self.traverse_node(start_node.get_left(), order)
+
+        if order == TraverseOrder.IN_ORDER:
+            self.tree_list.append(start_node.get_item())
 
         if start_node.get_right():
-            self.traverse_node(start_node.get_right())
+            self.traverse_node(start_node.get_right(), order)
 
-    def __str__(self):
-        return str(self.root.get_item())
+        if order == TraverseOrder.POST_ORDER:
+            self.tree_list.append(start_node.get_item())
