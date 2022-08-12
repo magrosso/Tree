@@ -29,17 +29,37 @@ class Tree:
     def get_root_node(self):
         return self.root
 
+    def print_tree(self):
+        print()
+        row_count = self.get_height() + 1
+        for row in range(row_count):
+            self.tree_list.clear()
+            item_list = self.get_items_at_depth(self.root, row)
+            width = int(pow(2, row_count - 1) * 5)
+            print('{:^{width}}'.format(str(item_list), width=width))
+
+    def get_items_at_depth(self, node, depth):
+        if depth == 0:
+            self.tree_list.append(node.get_item())
+            node = self.root
+            return self.tree_list
+        if node.get_left():
+            self.get_items_at_depth(node.get_left(), depth - 1)
+        else:
+            self.tree_list.extend([None] * pow(2, depth - 1))
+        if node.get_right():
+            self.get_items_at_depth(node.get_right(), depth - 1)
+        else:
+            self.tree_list.extend([None] * pow(2, depth - 1))
+        return self.tree_list
+
     def get_height(self) -> int:
         self.height = 0
         return self.get_node_height(self.root, 0)
 
     def get_node_height(self, node, height) -> int:
-        left_height = height
-        right_height = height
-        if node.get_left():
-            left_height = self.get_node_height(node.get_left(), left_height + 1)
-        if node.get_right():
-            right_height = self.get_node_height(node.get_right(), right_height + 1)
+        left_height = self.get_node_height(node.get_left(), height + 1) if node.get_left() else height
+        right_height = self.get_node_height(node.get_right(), height + 1) if node.get_right() else height
         return max(left_height, right_height)
 
     def search_node(self, item):
@@ -90,6 +110,7 @@ class Tree:
     def traverse_node(self, start_node, order: TraverseOrder):
         if order == TraverseOrder.PRE_ORDER:
             self.tree_list.append(start_node.get_item())
+
         if start_node.get_left():
             self.traverse_node(start_node.get_left(), order)
 

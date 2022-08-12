@@ -105,3 +105,48 @@ def test_get_height():
         t.add_node(node)
 
     assert t.get_height() == max(len(left_items), len(right_items))
+
+
+def create_tree():
+    root_item = 100
+    n = Node.Node(root_item)
+    t = Tree.Tree(n, 'traverse')
+    right_items = (101, 102, 103, 300)
+    left_items = (99, 98, 97, 2)
+    all_items = left_items + right_items
+    for item in all_items:
+        node = Node.Node(item)
+        t.add_node(node)
+    return t
+
+
+def test_nodes_at_depth_0():
+    t = create_tree()
+    assert t.get_items_at_depth(t.get_root_node(), 0) == [100, ]
+
+
+def test_nodes_at_depth_1():
+    t = create_tree()
+    assert t.get_items_at_depth(t.get_root_node(), 1) == [99, 101]
+
+
+def test_nodes_at_depth_2():
+    t = create_tree()
+    assert t.get_items_at_depth(t.get_root_node(), 2) == [98, None, None, 102]
+
+
+def test_nodes_at_depth_3():
+    t = create_tree()
+    assert t.get_items_at_depth(t.get_root_node(), 3) == [97, None, None, None, None, None, None, 103]
+
+
+def test_nodes_at_depth_4():
+    t = create_tree()
+    filler = [None] * (pow(2, 4) - 2)
+    exp_list = [2] + filler + [300]
+    assert t.get_items_at_depth(t.get_root_node(), 4) == exp_list
+
+
+def test_print_tree():
+    t = create_tree()
+    t.print_tree()
