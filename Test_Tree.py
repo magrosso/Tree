@@ -3,33 +3,37 @@ import Tree
 import Node
 
 
+def create_tree(name: str = 'tree with no name'):
+    root_item = 100
+    n = Node.Node(root_item)
+    t = Tree.Tree(n, name)
+    right_items = (101, 102, 103, 300)
+    left_items = (99, 98, 97, 2)
+    all_items = left_items + right_items
+    for item in all_items:
+        t.add_node(item)
+    return t
+
+
 def test_tree_create():
     n = Node.Node(12)
     t = Tree.Tree(n)
     assert t.root == n
 
 
-def test_add_new_node():
-    start, delta = 100, 10
-    n = Node.Node(start)
-    t = Tree.Tree(n, 'add nodes')
+def test_add_new_item():
+    t = create_tree('add_new_item')
+    # add larger values
+    assert t.add_node(104)
+    assert t.add_node(1)
 
-    # add larger values to the right
-    for val in range(start + 1, start + delta):
-        n = Node.Node(val)
-        assert t.add_node(n) == n
-        f = t.search_node(val)
-        assert f
-        assert f.get_item() == val
 
-    # add smaller values to the left
-    for val in range(start - 1, start - delta, -1):
-        n = Node.Node(val)
-        assert t.add_node(n) == n
-        f = t.search_node(val)
-        assert f
-        assert f.get_item() == val
-    # assert t.traverse() == list(range(start - delta, start + delta))
+def test_add_existing_leaf_item():
+    t = create_tree('add_existing_item')
+    # add existing items fails
+    assert not t.add_node(t.get_root_node().get_item())
+    assert not t.add_node(300)
+    assert not t.add_node(2)
 
 
 def test_tree_search_last():
@@ -37,11 +41,8 @@ def test_tree_search_last():
     t = Tree.Tree(n)
     search_item = 12
     for val in range(1, search_item + 1):
-        n = Node.Node(val)
-        assert t.add_node(n) == n
-    f = t.search_node(search_item)
-    assert f
-    assert f.get_item() == search_item
+        assert t.add_node(val)
+    assert t.search_item(search_item)
 
 
 def test_tree_search_first():
@@ -49,11 +50,8 @@ def test_tree_search_first():
     t = Tree.Tree(n)
     search_item = 1
     for val in range(1, 13):
-        n = Node.Node(val)
-        assert t.add_node(n) == n
-    f = t.search_node(search_item)
-    assert f
-    assert f.get_item() == search_item
+        assert t.add_node(val)
+    assert t.search_item(search_item)
 
 
 def test_tree_search_not_found():
@@ -61,10 +59,8 @@ def test_tree_search_not_found():
     t = Tree.Tree(n)
     search_item = 12
     for val in range(1, search_item + 1):
-        n = Node.Node(val)
-        assert t.add_node(n) == n
-    f = t.search_node(search_item + 1)
-    assert not f
+        assert t.add_node(val)
+    assert not t.search_item(search_item + 1)
 
 
 def test_traverse():
@@ -77,8 +73,7 @@ def test_traverse():
 
     # add right, then left items
     for val in right_items + left_items:
-        n = Node.Node(val)
-        assert t.add_node(n) == n
+        assert t.add_node(val)
     # assert
     t.traverse(Tree.TraverseOrder.PRE_ORDER)
     assert t.get_tree_list() == [root_item, ] + left_items + right_items
@@ -101,23 +96,9 @@ def test_get_height():
     left_items = (99, 98, 97, 2)
     all_items = left_items + right_items
     for item in all_items:
-        node = Node.Node(item)
-        t.add_node(node)
+        t.add_node(item)
 
     assert t.get_height() == max(len(left_items), len(right_items))
-
-
-def create_tree():
-    root_item = 100
-    n = Node.Node(root_item)
-    t = Tree.Tree(n, 'traverse')
-    right_items = (101, 102, 103, 300)
-    left_items = (99, 98, 97, 2)
-    all_items = left_items + right_items
-    for item in all_items:
-        node = Node.Node(item)
-        t.add_node(node)
-    return t
 
 
 def test_nodes_at_depth_0():

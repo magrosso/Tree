@@ -29,14 +29,22 @@ class Tree:
     def get_root_node(self):
         return self.root
 
-    def print_tree(self):
+    def print_row(self, items, row, height):
+        """Arrange tree so that each parent appears centered above their two children
+        """
+        max_item_width = len('None') + 1
+        item_width = max_item_width * pow(2, height - row)
         print()
-        row_count = self.get_height() + 1
-        for row in range(row_count):
+        for item in items:
+            print('{:^{width}}'.format(str(item), width=item_width), end='')
+
+    def print_tree(self):
+        print(f'\n{self.get_name()}')
+        height = self.get_height()
+        for row in range(height + 1):
             self.tree_list.clear()
             item_list = self.get_items_at_depth(self.root, row)
-            width = int(pow(2, row_count - 1) * 5)
-            print('{:^{width}}'.format(str(item_list), width=width))
+            self.print_row(item_list, row, height)
 
     def get_items_at_depth(self, node, depth):
         if depth == 0:
@@ -62,7 +70,7 @@ class Tree:
         right_height = self.get_node_height(node.get_right(), height + 1) if node.get_right() else height
         return max(left_height, right_height)
 
-    def search_node(self, item):
+    def search_item(self, item) -> bool:
         """
         Search item in BST starting at root node
         """
@@ -73,33 +81,36 @@ class Tree:
             elif item > next_node.get_item():
                 next_node = next_node.get_right()
             else:  # found it
-                return next_node
-        return None
+                return True
+        return False
 
-    def add_node(self, new_node: Node):
+    def add_node(self, new_item) -> bool:
+        """
+        :param new_item:
+        :type new_item:
+        :return: True if item added, False otherwise
+        :rtype:
+        """
         next_node = self.root
         while next_node:
             # insert left of parent
-            if new_node.get_item() < next_node.get_item():
+            if new_item < next_node.get_item():
                 if next_node.get_left():
                     next_node = next_node.get_left()
                 else:
                     # add new node to the left of next_node
-                    next_node.set_left(new_node)
-                    # print(f'Added {new_node.get_item()} left of {next_node.get_item()}')
-                    return new_node
+                    next_node.set_left(Node.Node(new_item))
+                    return True
             # insert right of parent
-            elif new_node.get_item() > next_node.get_item():
+            elif new_item > next_node.get_item():
                 if next_node.get_right():
                     next_node = next_node.get_right()
                 else:
                     # add new node to the right of next_node
-                    next_node.set_right(new_node)
-                    # print(f'Added {new_node.get_item()} right of {next_node.get_item()}')
-                    return new_node
+                    next_node.set_right(Node.Node(new_item))
+                    return True
             else:
-                # cannot insert node with existing value
-                return None
+                return False
 
     def traverse(self, order: TraverseOrder):
         print(f'\nTraverse tree: {self.get_name()}')
