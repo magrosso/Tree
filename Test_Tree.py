@@ -42,7 +42,7 @@ def test_tree_search_last():
     search_item = 12
     for val in range(1, search_item + 1):
         assert t.add_node(val)
-    assert t.search_item(search_item)
+    assert t.search_item(search_item) is not None
 
 
 def test_tree_search_first():
@@ -51,7 +51,7 @@ def test_tree_search_first():
     search_item = 1
     for val in range(1, 13):
         assert t.add_node(val)
-    assert t.search_item(search_item)
+    assert t.search_item(search_item) is not None
 
 
 def test_tree_search_not_found():
@@ -60,7 +60,7 @@ def test_tree_search_not_found():
     search_item = 12
     for val in range(1, search_item + 1):
         assert t.add_node(val)
-    assert not t.search_item(search_item + 1)
+    assert t.search_item(search_item + 1) is None
 
 
 def test_traverse():

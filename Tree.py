@@ -29,14 +29,16 @@ class Tree:
     def get_root_node(self):
         return self.root
 
-    def print_row(self, items, row, height):
+    @staticmethod
+    def print_row(items, row, height):
         """Arrange tree so that each parent appears centered above their two children
         """
-        max_item_width = len('None') + 1
+        max_item_width = 3
         item_width = max_item_width * pow(2, height - row)
         print()
         for item in items:
-            print('{:^{width}}'.format(str(item), width=item_width), end='')
+            item_str = str(item) if item else 'x'
+            print('{:^{width}}'.format(item_str, width=item_width), end='')
 
     def print_tree(self):
         print(f'\n{self.get_name()}')
@@ -70,26 +72,22 @@ class Tree:
         right_height = self.get_node_height(node.get_right(), height + 1) if node.get_right() else height
         return max(left_height, right_height)
 
-    def search_item(self, item) -> bool:
+    def search_item(self, item) -> Node:
         """
         Search item in BST starting at root node
         """
-        next_node = self.root
-        while next_node:
-            if item < next_node.get_item():
-                next_node = next_node.get_left()
-            elif item > next_node.get_item():
-                next_node = next_node.get_right()
+        node = self.root
+        while node:
+            if item < node.get_item():
+                node = node.get_left()
+            elif item > node.get_item():
+                node = node.get_right()
             else:  # found it
-                return True
-        return False
+                return node
+        return None
 
     def add_node(self, new_item) -> bool:
-        """
-        :param new_item:
-        :type new_item:
-        :return: True if item added, False otherwise
-        :rtype:
+        """Add item to tree
         """
         next_node = self.root
         while next_node:
@@ -111,6 +109,35 @@ class Tree:
                     return True
             else:
                 return False
+
+    def delete_node(self, item) -> Node:
+        """
+        Search item in BST starting at root node
+        """
+        node = self.root
+        while node:
+            if item < node.get_item():
+                next_node = node.get_left()
+                if item == next_node.get_item():
+                    if next_node.get_left() and next_node.get_right():
+                        # RTFM (Right Tree Find Minimum)
+                    else:
+                        node.set_left(next_node.get_left() or next_node.get_right())
+                else:
+                    node = next_node
+            elif item > node.get_item():
+                next_node = node.get_right()
+                # if next node matches, delete it
+                if item == next_node.get_item():
+                    if next_node.get_left() and next_node.get_right():
+                        # RTFM (Right Tree Find Minimum)
+                    else:
+                        node.set_right(next_node.get_left() or next_node.get_right())
+                else:
+                    node = next_node
+            else:
+                return None
+        return None # not found
 
     def traverse(self, order: TraverseOrder):
         print(f'\nTraverse tree: {self.get_name()}')
